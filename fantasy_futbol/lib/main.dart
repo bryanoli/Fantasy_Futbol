@@ -1,5 +1,10 @@
+import 'package:fantasy_futbol/auth/auth_page.dart';
 import 'package:fantasy_futbol/auth/main_page.dart';
-import 'package:fantasy_futbol/pages/signin.dart';
+import 'package:fantasy_futbol/pages/feedback_page.dart';
+import 'package:fantasy_futbol/pages/setting_page.dart';
+import 'package:fantasy_futbol/pages/signin_page.dart';
+import 'package:fantasy_futbol/pages/squad_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -25,6 +30,15 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: MainPage(),
+      routes: {
+        '/squad': (context) => squadPage(),
+        '/settings': (context) => settingPage(),
+        '/feedback': (context) => feedbackPage(),
+        '/logout': (context) {
+          FirebaseAuth.instance.signOut();
+          return MainPage();
+        },
+      },
     );
   }
 }

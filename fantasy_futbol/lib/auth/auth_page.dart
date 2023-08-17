@@ -1,5 +1,5 @@
 import 'package:fantasy_futbol/pages/register_page.dart';
-import 'package:fantasy_futbol/pages/signin.dart';
+import 'package:fantasy_futbol/pages/signin_page.dart';
 import 'package:flutter/material.dart';
 
 class AuthPage extends StatefulWidget {

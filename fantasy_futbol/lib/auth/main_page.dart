@@ -1,9 +1,9 @@
 import 'package:fantasy_futbol/auth/auth_page.dart';
-import 'package:fantasy_futbol/pages/signin.dart';
+import 'package:fantasy_futbol/pages/signin_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import '../pages/home.dart';
+import '../pages/home_page.dart';
 
 
 class MainPage extends StatelessWidget{

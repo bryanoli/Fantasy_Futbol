@@ -1,12 +1,15 @@
+import 'package:fantasy_futbol/auth/main_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class NavDrawer extends StatelessWidget {
  
   final List<_DrawerItem> _drawerItems = [
     _DrawerItem(Icons.input, 'Home', '/'),
-    _DrawerItem(Icons.verified_user, 'Squad', '/squad'),
+    _DrawerItem(Icons.groups_2_sharp, 'Squad', '/squad'),
     _DrawerItem(Icons.settings, 'Settings', '/settings'),
     _DrawerItem(Icons.border_color, 'Feedback', '/feedback'),
+    _DrawerItem(Icons.logout_sharp, 'Logout', '/logout'),
   ];
 
   @override
@@ -42,17 +45,35 @@ class NavDrawer extends StatelessWidget {
       leading: Icon(item.icon),
       title: Text(item.title),
       onTap: () {
-        Navigator.pushNamed(context, item.routeName);
+        if(item.logout){
+           new MaterialPageRoute(builder:(BuildContext context) => MainPage());
+         }
+         else{
+          Navigator.pushNamed(context, item.routeName);
+         }
+        
       },
     );
   }
+
+  // void _handleLogout(BuildContext context){
+
+  //  FirebaseAuth.instance.signOut();
+
+  //   // Navigate to the sign-in page
+  //   Navigator.pushReplacementNamed(context, '/logout');
+  
+  // }
+
 }
+
+
 
 
 class _DrawerItem {
   final IconData icon;
   final String title;
   final String routeName;
-
-  _DrawerItem(this.icon, this.title, this.routeName);
+  final bool logout;
+  _DrawerItem(this.icon, this.title, this.routeName, {this.logout = false});
 }
