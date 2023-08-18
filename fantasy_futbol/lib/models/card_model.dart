@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
-class CardModel {
-  final String id;
+class playerCardModel {
   final String name;
+  final String team;
   final String imageUrl;
   
-  CardModel({
-    required this.id,
+  playerCardModel({
     required this.name,
+    required this.team,
     required this.imageUrl,
     
   });
+
 }
