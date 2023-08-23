@@ -20,18 +20,25 @@ class NavDrawer extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: <Widget>[
             const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.black,
-                image: DecorationImage(
-                  fit: BoxFit.scaleDown,
-                  image: AssetImage('assets/images/profile.jpg'),
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.sports_soccer_sharp,
+                      color: Colors.white,
+                      size: 100,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      'Menu',
+                      style: TextStyle(color: Colors.white, fontSize: 25),
+                    ),
+                  ],
                 ),
               ),
-              child: Text(
-                'Menu',
-                style: TextStyle(color: Colors.white, fontSize: 25),
-              ),
-            ),
             for (var item in _drawerItems)
               _buildMult(item, context),
           ],
