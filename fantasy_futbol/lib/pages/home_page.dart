@@ -233,18 +233,25 @@ Future<void> _handleSearch() async {
                   if (!areLeagueAndSeasonEntered) {
                      return []; // Return an empty list when league and season are not entered
                     }
-                   return List<ListTile>.generate(players!.length, (int index) {
-                      final player = players[index];
-                      return ListTile(
-                        title: Text(player['player']['name']),  // Use the appropriate property from your Player class
-                        onTap: () {
-                          setState(() {
-                            controller.closeView(player['player']['name']);  // Use the appropriate property from your Player class
-                          });
-                        },
-                      );
-                    });
-                  });
+                    final filteredSuggestions = players!
+                            .where((player) =>
+                                player['player']['name']
+                                    .toLowerCase()
+                                    .contains(controller.text.toLowerCase())) // Filter suggestions based on user input
+                            .map((player) {
+                              return ListTile(
+                                title: Text(player['player']['name']),  // Use the appropriate property from your Player class
+                                onTap: () {
+                                  setState(() {
+                                    controller.closeView(player['player']['name']);  // Use the appropriate property from your Player class
+                                  });
+                                },
+                              );
+                            })
+                            .toList();
+
+                        return filteredSuggestions;
+                      });
               } else {
                 return Text('No data available');
               }
