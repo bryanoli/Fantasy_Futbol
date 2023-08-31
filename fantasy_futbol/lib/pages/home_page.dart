@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 
+import 'package:fantasy_futbol/api/card_api.dart';
 import 'package:fantasy_futbol/models/card_model.dart';
 import 'package:fantasy_futbol/widgets/menunav.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -142,6 +143,8 @@ Future<void> _handleSearch() async {
 
 
 
+  Player? selectedPlayer;
+
   @override
   Widget build(BuildContext context){
   
@@ -169,6 +172,11 @@ Future<void> _handleSearch() async {
         children: [
           Row(
             children: [
+              if (selectedPlayer != null)
+            PlayerCardModel(
+              player: selectedPlayer!,
+              apiManager: ApiManager(), // Initialize ApiManager properly
+            ),
               Expanded(
                 child: TextFormField(
                   controller: leagueController,
@@ -243,6 +251,14 @@ Future<void> _handleSearch() async {
                                 title: Text(player['player']['name']),  // Use the appropriate property from your Player class
                                 onTap: () {
                                   setState(() {
+                                    final playerName = player['player']['name'];
+                                    final teamName = player['statistics'][0]['team']['name'];
+                                    final imageUrl = player['player']['photo'];
+                                    selectedPlayer = Player(
+                                      name: playerName,
+                                      team: teamName,
+                                      imageUrl: imageUrl,
+                                    );
                                     controller.closeView(player['player']['name']);  // Use the appropriate property from your Player class
                                   });
                                 },
