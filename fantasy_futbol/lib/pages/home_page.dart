@@ -75,9 +75,10 @@ class _HomePageState extends State<HomePage> {
 
     return playersData;
   }
+  
 
   // Extracted method to display player statistics
- List<playerCardModel> buildPlayerStatistics(Map<String, dynamic> playerData) {
+ List<Player> buildPlayerStatistics(Map<String, dynamic> playerData) {
   final statistics = playerData['response'][0]['statistics'][0];
   final playerName = playerData['response'][0]['player']['name'];
   final playerImage = playerData['response'][0]['player']['photo'];
@@ -85,23 +86,61 @@ class _HomePageState extends State<HomePage> {
   
 
   final playerCards = [
-    playerCardModel(
+    Player(
       name: playerName,
       imageUrl: playerImage, 
       team: teamName,
+      
     ),
     // Add more PlayerCard instances for other statistics
   ];
 
   return playerCards;
-
-  // return ListView.builder(
-  //   itemCount: statItems.length,
-  //   itemBuilder: (context, index) {
-  //     return statItems[index];
-  //   },
-  // );
 }
+
+Future<List<dynamic>> _fetchPlayersData() async {
+  int league, season;
+
+  if (int.tryParse(leagueController.text) != null) {
+    league = int.parse(leagueController.text);
+  } else {
+    // Handle invalid league input, perhaps show an error message
+    return [];
+  }
+
+  if (int.tryParse(seasonController.text) != null) {
+    season = int.parse(seasonController.text);
+  } else {
+    // Handle invalid season input, perhaps show an error message
+    return [];
+  }
+
+  return fetchPlayersData(league, season);
+}
+
+Future<void> _handleSearch() async {
+  final league = int.tryParse(leagueController.text);
+  final season = int.tryParse(seasonController.text);
+
+  if (league != null && season != null) {
+    setState(() {
+      areLeagueAndSeasonEntered = true;
+    });
+  } else {
+    setState(() {
+      areLeagueAndSeasonEntered = false;
+    });
+  }
+}
+
+
+  TextEditingController leagueController = TextEditingController();
+  TextEditingController seasonController = TextEditingController();
+  bool areLeagueAndSeasonEntered = false;
+  
+  bool isDark = false;
+
+
 
   @override
   Widget build(BuildContext context){
@@ -126,35 +165,94 @@ class _HomePageState extends State<HomePage> {
     ),
     drawer: NavDrawer(),
       body: Center(
-        child: FutureBuilder<List<dynamic>>(
-   future: fetchPlayersData(39, 2023),
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return CircularProgressIndicator();
-
-  }else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else if (snapshot.hasData) {
-          final players = snapshot.data;
-          return ListView.builder(
-            itemCount: players?.length,
-            itemBuilder: (context, index) {
-              final player = players?[index];
-              return ListTile(
-                title: Text(player['player']['name']),
-                subtitle: Text(player['statistics'][0]['team']['name']),
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(player['player']['photo']),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: leagueController,
+                  decoration: InputDecoration(labelText: 'League'),
+                  onEditingComplete: _handleSearch,
                 ),
-              );
+              ),
+              SizedBox(width: 16.0),
+              Expanded(
+                child: TextFormField(
+                  controller: seasonController,
+                  decoration: InputDecoration(labelText: 'Season'),
+                  onEditingComplete: _handleSearch,
+                ),
+              ),
+            ],
+          ),
+          FutureBuilder<List<dynamic>>(
+            future: _fetchPlayersData(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else if (snapshot.hasData) {
+                final players = snapshot.data;
+                
+                
+              return SearchAnchor(
+                  builder: (BuildContext context, SearchController controller) {
+                    return SearchBar(
+              controller: controller,
+              padding: const MaterialStatePropertyAll<EdgeInsets>(
+                  EdgeInsets.symmetric(horizontal: 16.0)),
+              onTap: () {
+                controller.openView();
+              },
+              onChanged: (_) {
+                controller.openView();
+              },
+              leading: const Icon(Icons.search),
+              trailing: <Widget>[
+                Tooltip(
+                  message: 'Change brightness mode',
+                  child: IconButton(
+                    isSelected: isDark,
+                    onPressed: () {
+                      setState(() {
+                        isDark = !isDark;
+                      });
+                    },
+                        icon: const Icon(Icons.wb_sunny_outlined),
+                        selectedIcon: const Icon(Icons.brightness_2_outlined),
+                          ),
+                        ),
+                      ],
+                    );
+                    
+                  },
+                  suggestionsBuilder: (BuildContext context, SearchController controller) {
+                  print(players);
+                  if (!areLeagueAndSeasonEntered) {
+                     return []; // Return an empty list when league and season are not entered
+                    }
+                   return List<ListTile>.generate(players!.length, (int index) {
+                      final player = players[index];
+                      return ListTile(
+                        title: Text(player['player']['name']),  // Use the appropriate property from your Player class
+                        onTap: () {
+                          setState(() {
+                            controller.closeView(player['player']['name']);  // Use the appropriate property from your Player class
+                          });
+                        },
+                      );
+                    });
+                  });
+              } else {
+                return Text('No data available');
+              }
             },
-          );
-        } else {
-          return Text('No data available');
-        }
-      },
-)
+          ),
+        ],
       ),
+    ),
  );
 
 
@@ -164,6 +262,38 @@ class _HomePageState extends State<HomePage> {
 
 
 }
+
+// Center(
+//         child: FutureBuilder<List<dynamic>>(
+//    future: fetchPlayersData(39, 2023),
+//   builder: (context, snapshot) {
+//     if (snapshot.connectionState == ConnectionState.waiting) {
+//       return CircularProgressIndicator();
+
+//   }else if (snapshot.hasError) {
+//           return Text('Error: ${snapshot.error}');
+//         } else if (snapshot.hasData) {
+//           final players = snapshot.data;
+//           return ListView.builder(
+//             itemCount: players?.length,
+//             itemBuilder: (context, index) {
+//               final player = players?[index];
+//               return ListTile(
+//                 title: Text(player['player']['name']),
+//                 subtitle: Text(player['statistics'][0]['team']['name']),
+//                 leading: CircleAvatar(
+//                   backgroundImage: NetworkImage(player['player']['photo']),
+//                 ),
+//               );
+//             },
+//           );
+//         } else {
+//           return Text('No data available');
+//         }
+//       },
+// )
+//       ),
+
 
 
 

@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
       ),
       home: MainPage(),
       routes: {
-        '/squad': (context) => squadPage(),
         '/settings': (context) => settingPage(),
         '/feedback': (context) => feedbackPage(),
         '/logout': (context) {
