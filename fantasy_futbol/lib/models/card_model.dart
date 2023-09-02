@@ -25,42 +25,51 @@ class PlayerCardModel extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blue, width: 2),
-        ),
+      child: Card(
+        color: Colors.amberAccent,
+        shadowColor: Colors.limeAccent,
+        
+        elevation: 4.0,
+        margin: EdgeInsets.all(16.0),
         child: Column(
-          children: [
-            Image.network(player.imageUrl), // Display the player's image
-            Text(player.name), // Display the player's name
-            Text(player.team), // Display the player's team
-            // Add more widgets to display other player information if needed
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              height: MediaQuery.of(context).size.height*.1,
+                width: MediaQuery.of(context).size.width*.1,
+            ),
+            CircleAvatar(
+              radius: 90,
+              backgroundImage: NetworkImage(player.imageUrl),
+            ),
+            SizedBox(
+              height: 16.0,
+            ),
+            Text(
+              player.name,
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            Text(
+              'Team: ${player.team}',
+              style: TextStyle(
+                fontSize: 18.0,
+              ),
+            ),
+            SizedBox(
+              height: 16.0,
+            ),
           ],
         ),
       ),
     );
   }
 }
-
-// class PlayerList extends StatelessWidget {
-//   final List<Player> players;
-//   final ApiManager apiManager;
-
-//   const PlayerList({super.key, required this.players, required this.apiManager, required int league, required int season});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView.builder(
-//       itemCount: players.length,
-//       itemBuilder: (context, index) {
-//         final player = players[index];
-//         return PlayerCardModel(
-//           player: player,
-//           isBeingDragged: false,
-//           apiManager: apiManager,
-//         );
-//       },
-//     );
-//   }
-// }
 
