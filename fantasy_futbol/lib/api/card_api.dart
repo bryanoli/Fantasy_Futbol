@@ -1,9 +1,15 @@
 
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fantasy_futbol/models/card_model.dart';
 
+
 class ApiManager {
+  TextEditingController leagueController = TextEditingController();
+  TextEditingController seasonController = TextEditingController();
+  bool areLeagueAndSeasonEntered = false;
+  
   final String apiKey = '8e4c13e90cmshb2e33cb92fa3787p1da5e4jsndbda7446ae7b';
   final String apiUrl = 'https://api-football-v1.p.rapidapi.com/v3/players';
 
@@ -74,4 +80,9 @@ class ApiManager {
 
   return playerCards;
   }
+
+
+
 }
+
+
